@@ -1,0 +1,25 @@
+{
+  "base_pipeline_root": "$GEORX_ROOT/main",
+  "listwise_weights_root": "$GEORX_LISTWISE_WEIGHTS_ROOT",
+  "pair_weights_root": "$GEORX_PAIR_WEIGHTS_ROOT",
+  "four_cells": [
+    "clip_vitb32__fashion200k_task0",
+    "blip2_vitL__fashion200k_task0",
+    "clip_vitb32__oven_task6"
+  ],
+  "h2h5_seeds": {
+    "clip_sf_large__webqa_task1": [1, 2, 3],
+    "gme_qwen2vl_2b__visualnews_task0": [1, 2, 3],
+    "blip_ff_large__webqa_task1": [2, 3],
+    "clip_vitb32__visualnews_task0": [1, 3]
+  },
+  "default": {
+    "csls_lambda": 0.5,
+    "csls_k": 10,
+    "qe_alpha": 0.1,
+    "qe_k": 10,
+    "qe_power": 3.0,
+    "ce_top_n": 100,
+    "gamma": 0.5
+  }
+}

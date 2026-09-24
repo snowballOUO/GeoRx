@@ -1,0 +1,35 @@
+version: 1
+description: >-
+  Roles for the 90-pair headline. Thresholds are never fit on held-out
+  (encoder, load) pairs. Headline is primary_encoders × primary_datasets (90).
+  never_hitrate_datasets must stay empty: do not exclude mscoco_task0 or
+  nights_task4.
+never_hitrate_datasets: []
+primary_datasets:
+  - mscoco_task0
+  - visualnews_task0
+  - fashion200k_task0
+  - webqa_task1
+  - edis_task2
+  - nights_task4
+  - oven_task6
+  - infoseek_task6
+  - fashioniq_task7
+  - cirr_task7
+primary_encoders:
+  - clip_sf_large
+  - blip_ff_large
+  - openclip_fft
+  - gme_qwen2vl_2b
+  - vlm2vec_phi3
+  - e5v_llava_next
+  - clip_vitb32
+  - siglip_base
+  - blip2_vitL
+path_overrides:
+  openclip_fft__oven_task6: ${GEORX_DATA_ROOT}/repaired_hdf5/openclip_fft/oven_task6.hdf5
+notes:
+  - headline = primary_encoders × primary_datasets = 90
+  - never_hitrate_datasets must remain empty
+  - CLIP-SF H1-gate ΔR is not diagnosis ground truth and is not a reason to drop a load
+  - native-train vs repartitioned evidence grade is recorded per pair, not mixed in the headline

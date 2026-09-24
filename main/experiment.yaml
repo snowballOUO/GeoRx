@@ -1,0 +1,109 @@
+experiment_id: "georx_main"
+title: "Official diagnosis–repair pipeline vs matched isotropic Gaussian sphere"
+created_at: "2026-09-09"
+updated_at: "2026-09-09"
+status: awaiting_approval
+domain: vector-search
+hypothesis: >-
+  Matched isotropic Gaussian L2 spheres are the chance-geometry reference for
+  H1–H5. The detector trains nothing, so all 90 pairs draw their six query
+  segments from the official test split (no emb_train, no re-encoding). mu,sigma
+  fit on a fixed unique-query budget (768, 32 windows) and tau on 320 unique
+  over 20 windows, so the estimator caliber is identical across pairs; the
+  coverage fraction is a derived, unequal number. Official train/val are used
+  only to train the cross-encoders. Three random seeds give replication.
+  Injection-type recall does not prove native-set accuracy; false-positive rate
+  is reported under two scopes plus a co-fire matrix. ΔR is an outcome.
+success_criteria: >-
+  Do not start until plan.md section 12 (GPU schedule and go-ahead) is
+  approved. Then: split-hash check on the legacy split function, official
+  train encoding to T=15000, sphere no-plant gate plus sphere self
+  false-positive rate, 90 native diagnosis sets, cross-encoder weights
+  (open plus locally trained on official train/val only), full-corpus
+  repairs, top-100 rerank column, and channel exact-match reported
+  separately for literature-only and with-local-ce scopes. No τ search.
+  never_hitrate_datasets stays empty. Do not rewrite 20260825 sealed JSON.
+params:
+  n_pairs: 90
+  never_hitrate_datasets: []
+  null_model: isotropic_gaussian_l2
+  match: [dim, n_pool, window_256, list_50]
+  random_seeds: [1, 2, 3]
+  split_hash_check_seed: 20260825
+  seed_split_offset: 0
+  seed_window_offset: 1
+  seed_eval_offset: 4
+  sphere_reference: fixed_20260908_seed_independent
+  sphere_null_seed_rule: "SEED_NULL + dim*1000003 + n_pool"
+  gate_seed_independent: true
+  sphere_self_fp_max_of_32: 3
+  window_size: 256
+  query_split: q_diag_q_eval_disjoint_per_seed
+  sampling_rule: per_seed_permutation_of_valid_test_queries
+  valid_query_def: has_ge1_gold_in_local_pool
+  q_eval_n: 500
+  q_diag_n: 1152
+  n_train: 512
+  n_cal: 320
+  n_fault: 320
+  total_draw: 1652
+  smallest_valid_pool: 1719
+  train_stat_windows: 32
+  cal_windows: 20
+  eval_windows: 2
+  csls_reference_from: q_diag_train_only
+  cross_seed_overlap_allowed: true
+  report: [mean, std, min_max]
+  alpha: 0.05
+  familywise_miscoverage_upper_bound: 0.047619
+  h3_second_frac_min: 0.15
+  h5_primary: score_interaction_share
+  native_phi_from: sphere_referenced_detector
+  false_positive_scopes: [sphere_self, native_clean]
+  cofire_matrix: true
+  multi_type_repair: independent_channels_primary
+  compose_order: [csls_p050, alpha_qe_a010, diffusion]
+  channel_hit_headline: exact_match_P_eq_T
+  useful_delta_r10: 0.005
+  registered_methods:
+    - csls_p050
+    - alpha_qe_a010
+    - diffusion
+    - ce_pair_blip_itm
+    - ce_pair_local
+    - ce_list_local
+  cross_encoder_route: mixed_open_weights_plus_local_training
+  cross_encoder_rerank_n: 100
+  cross_encoder_open_weight_loads:
+    - mscoco_task0
+    - visualnews_task0
+    - fashion200k_task0
+    - webqa_task1
+    - edis_task2
+    - oven_task6
+    - infoseek_task6
+  cross_encoder_local_train_loads:
+    - nights_task4
+    - fashioniq_task7
+    - cirr_task7
+  cross_encoder_train_uses: [official_train_queries, qrels_train]
+  cross_encoder_select_uses: [official_val_queries, qrels_val]
+  cross_encoder_forbids: [repair_test, repair_dev, qrels_test]
+  method_provenance_values: [analytic, pretrained_literature, locally_trained]
+  channel_hit_scopes: [literature_only, with_local_ce]
+  pool_mode: full
+  rewrite_sealed_profiles: false
+  encode_official_train: false
+  official_train_used_only_for: cross_encoder_training
+paths:
+  plan: main/experiment.yaml
+  code: main/code
+  runs: external
+  hdf5_root: user_supplied
+  mbeir_source: user_supplied
+notes: >-
+  Awaiting approval of plan.md plus answers to questions 1 and 2 in section 13.
+  Local openclip_fft oven_task6 HDF5 has unreadable gzip chunks; read the
+  read-only repaired copy under user instead. Local BLIP_FF checkpoint has
+  cross-attention layers but no itm_head, so no pretrained pairwise matching
+  scorer exists locally. hf-mirror.com is reachable for open weights.
